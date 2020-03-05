@@ -46,7 +46,7 @@ export default {
         area:
             async (_, { name }) => {
                 try {
-                    var response = await Area.findOne(name)
+                    var response = await Area.findOne({name})
                     return response
                 } catch (e) {
                     return e.response
