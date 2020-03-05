@@ -21,13 +21,18 @@ const areaSchema = new mongoose.Schema({
         required: true
     },
     enter: {
-        notifications: [{ type: String }],
-        bluetooth: { type: Boolean },
+        type: Boolean,
+        default: false
     },
-
     exit: {
-        notifications: [{ type: String }],
-        bluetooth: { type: Boolean },
+        type: Boolean,
+        default: false
+    },
+    title: {
+        type: String
+    },
+    body: {
+        type: String
     }
 
 })
@@ -46,7 +51,7 @@ export default {
         area:
             async (_, { name }) => {
                 try {
-                    var response = await Area.findOne({name})
+                    var response = await Area.findOne({ name })
                     return response
                 } catch (e) {
                     return e.response
@@ -128,25 +133,8 @@ export default {
             async (_, args) => {
                 const name = args.name;
                 try {
-                    if (args.enter === true && args.bluetooth !== null) { // to change bluetooth status on enter
-                        var response1 = await Area.findOneAndUpdate(name, { 'enter.bluetooth': args.bluetooth })
-                    }
-                    if (args.enter === true && args.notifications !== undefined) { // to add a notification on enter
-                        var currentNotifications = await Area.findOne({ name })
-                        if (currentNotifications.enter.notifications.indexOf(args.notifications) === -1) {
-                            var response2 = await Area.findOneAndUpdate(name, { $push: { 'enter.notifications': args.notifications } })
-                        }
-                    }
-                    if (args.exit === true && args.bluetooth !== null) { // to change bluetooth status on exit
-                        var response3 = await Area.findOneAndUpdate(name, { 'exit.bluetooth': args.bluetooth })
-                    }
-                    if (args.exit === true && args.notifications !== undefined) { // to add a notification on exit
-                        var currentNotifications = await Area.findOne({ name })
-                        if (currentNotifications.exit.notifications.indexOf(args.notifications) === -1) {
-                            var response4 = await Area.findOneAndUpdate(name, { $push: { 'exit.notifications': args.notifications } })
-                        }
-                    }
-                    return [response1, response2, response3, response4]
+                    var response = await Area.findOneAndUpdate(name, { enter: args.enter, exit: args.exit, title: args.title, body: args.body })
+                    return response;
                 } catch (e) {
                     return e.response;
                 }
@@ -181,23 +169,23 @@ export default {
         //     }
         //     return area
         // }
+        updateEvent:
+            async (_, args) => {
+                try {
+                    var response = Area.findOneAndUpdate(args);
+                    return response;
+                }
+                catch (e) {
+                    return e.response
+                }
+            }
+        ,
         deleteEvent:
             async (_, args) => {
                 const name = args.name;
                 try {
-                    if (args.enter === true && args.bluetooth === true) { // remove bluetooth change on enter
-                        var response1 = await Area.findOneAndUpdate(name, { 'enter.bluetooth': null })
-                    } 
-                    if (args.enter === true && args.notifications !== undefined) { // remove notification on enter
-                        var response2 = await Area.findOneAndUpdate(name, { $pull: { 'enter.notifications': { $in: [args.notifications] } } })
-                    }
-                    if (args.exit === true && args.bluetooth === true) { // remove bluetooth change on exit
-                        var response3 = await Area.findOneAndUpdate(name, { 'exit.bluetooth': null })
-                    }
-                    if (args.exit === true && args.notifications !== undefined) { // remove notification on exit
-                        var response4 = await Area.findOneAndUpdate(name, { $pull: { 'exit.notifications': { $in: [args.notifications] } } })
-                    }
-                    return [response1, response2, response3, response4]
+                    var response = await Area.findOneAndUpdate(name, { enter: false, exit: false, title: null, body: null })
+                    return response;
                 }
                 catch (e) {
                     return e.response;

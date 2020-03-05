@@ -7,18 +7,10 @@ import { gql } from 'apollo-server-express';
     latitude: Float!
     longitude: Float!
     radius: Int!
-    enter: Enter
-    exit: Exit
-  }
-
-  type Enter {
-    bluetooth: Boolean
-    notifications: [String]
-  }
-
-  type Exit {
-    bluetooth: Boolean
-    notifications: [String]
+    enter: Boolean
+    exit: Boolean
+    title: String
+    body: String
   }
 
   extend type Query {
@@ -30,8 +22,9 @@ import { gql } from 'apollo-server-express';
     createArea(name: String!, latitude: Float!, longitude: Float!, radius: Int!): Area
     updateArea(name: String!, latitude: Float, longitude: Float, radius: Int): Area
     deleteArea(name: String!): Area
-    createEvent(name: String!, enter: Boolean!, exit: Boolean!, bluetooth: Boolean, notifications: String): Area
-    deleteEvent(name: String!, enter: Boolean!, exit: Boolean!, bluetooth: Boolean, notifications: String): Area
+    createEvent(name: String!, enter: Boolean!, exit: Boolean!, title: String!, body: String!): Area
+    updateEvent(name: String!, enter: Boolean, exit: Boolean, title: String, body: String): Area
+    deleteEvent(name: String!): Area
   }
 
 `
