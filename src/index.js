@@ -1,3 +1,4 @@
+require('dotenv').config();
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import express from 'express';
@@ -22,11 +23,16 @@ server.applyMiddleware({
     app,
     path: '/graphql'
 });
-const url = 'mongodb://localhost:27017/graphql';
-mongoose.connect(url, {newURLParser: true});
+
+const url = process.env.MONGODB_URI || 'mongodb://localhost/geofencing-notification';
+mongoose.connect(url);
+
+// mongo connection for development:
+// const url = 'mongodb://localhost:27017/graphql';
+// mongoose.connect(url, {newURLParser: true});
 
 app.listen({
-    port: 8000
+    port: process.env.PORT || 8000
 }, () => {
-    console.log('Apollo Server on http://localhost:8000/graphql');
+    console.log('Apollo Server running!');
 });

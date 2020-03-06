@@ -6,7 +6,8 @@ import { ApolloProvider } from 'react-apollo';
 
 const client = new ApolloClient({
   link: new HttpLink({
-    uri: 'http://localhost:8000/graphql'
+    uri: 'https://geofencing-notification.herokuapp.com/graphql'
+    // uri: 'http://localhost:8000/graphql' --> for development / testing
   }),
   cache: new InMemoryCache()
 });
@@ -15,6 +16,28 @@ const client = new ApolloClient({
     state = {
       data: ''
     }
+
+    
+    getAll = function() {
+      client.query({
+        query: gql `
+        query areas {
+          areas {
+            name
+            latitude
+            longitude
+            radius
+            enter
+            exit
+            title
+            body
+          }
+        }`
+      }).then(response => this.setState({
+        data: response.data.areas
+      }, () => console.log(this.state)));
+    };
+
     componentDidMount(){
 
       //get all areas   
@@ -60,23 +83,23 @@ const client = new ApolloClient({
 
      //create an Area --> must enter all parameters name/latitude/longitude/radius/enter/exit/title/body
 
-    // client.mutate({
-    //  variables: {"name": "mongo", "latitude": 1212.1, "longitude": -121.2, "radius": 20, "enter": true, "exit": true, "title": "welcome", "body": "youve got mail"},
-    //  mutation: gql`
-    //  mutation createArea ($name: String!, $latitude: Float!, $longitude: Float!, $radius: Int!, $enter: Boolean!, $exit: Boolean!, $title: String!, $body: String!) {
-    //    createArea (name: $name, latitude: $latitude, longitude: $longitude, radius: $radius, enter: $enter, exit: $exit, title: $title, body: $body) {
-    //      name
-    //      latitude
-    //      longitude
-    //      radius
-    //      enter
-    //      exit
-    //      title
-    //      body
-    //    }
-    //  }`
-    // }).then(response => console.log(response))
-    // .catch(err => console.error(err));
+    client.mutate({
+     variables: {"name": "mongo2", "latitude": 1212.1, "longitude": -121.2, "radius": 20, "enter": true, "exit": true, "title": "welcome", "body": "youve got mail"},
+     mutation: gql`
+     mutation createArea ($name: String!, $latitude: Float!, $longitude: Float!, $radius: Int!, $enter: Boolean!, $exit: Boolean!, $title: String!, $body: String!) {
+       createArea (name: $name, latitude: $latitude, longitude: $longitude, radius: $radius, enter: $enter, exit: $exit, title: $title, body: $body) {
+         name
+         latitude
+         longitude
+         radius
+         enter
+         exit
+         title
+         body
+       }
+     }`
+    }).then(response => console.log(response))
+    .catch(err => console.error(err));
   
 
   //update an Area -- must include name, then optional latitude/longitude/radius
@@ -145,10 +168,11 @@ const client = new ApolloClient({
         <ApolloProvider client={client}>
         <View style={styles.container}>
           <View style={styles.header}>
-      <Text style={styles.headerText}>Text</Text>
+      <Text style={styles.headerText} onPress = {() => this.getAll()}>Text</Text>
           </View>
           <View style={styles.contentContainer}>
-            <Text>Open up App.js to start working on your app!</Text>
+      {this.state.data.length > 0 ?       <Text>{this.state.data[0].name}</Text>
+: null}
           </View>
         </View>
         </ApolloProvider>
