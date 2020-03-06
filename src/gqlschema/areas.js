@@ -7,8 +7,8 @@ import { gql } from 'apollo-server-express';
     latitude: Float!
     longitude: Float!
     radius: Int!
-    enter: Boolean
-    exit: Boolean
+    enter: Boolean!
+    exit: Boolean!
     title: String
     body: String
   }
@@ -19,10 +19,9 @@ import { gql } from 'apollo-server-express';
   }
 
   extend type Mutation {
-    createArea(name: String!, latitude: Float!, longitude: Float!, radius: Int!): Area
+    createArea(name: String!, latitude: Float!, longitude: Float!, radius: Int!, enter: Boolean!, exit: Boolean!, title: String!, body: String!): Area
     updateArea(name: String!, latitude: Float, longitude: Float, radius: Int): Area
     deleteArea(name: String!): Area
-    createEvent(name: String!, enter: Boolean!, exit: Boolean!, title: String!, body: String!): Area
     updateEvent(name: String!, enter: Boolean, exit: Boolean, title: String, body: String): Area
     deleteEvent(name: String!): Area
   }

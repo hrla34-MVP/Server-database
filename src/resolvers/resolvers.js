@@ -22,10 +22,12 @@ const areaSchema = new mongoose.Schema({
     },
     enter: {
         type: Boolean,
+        required: true,
         default: false
     },
     exit: {
         type: Boolean,
+        required: true,
         default: false
     },
     title: {
@@ -42,12 +44,13 @@ export default {
     Query: {
         areas:
             async () => {
-                const response = await Area.find({})
+            try {
+                var response = await Area.find({})
                 return response;
+            } catch (e) {
+                return e.response
             }
-        // (parent, args, { models }) => {
-        //     return Object.values(models.areas)}
-        ,
+        },
         area:
             async (_, { name }) => {
                 try {
@@ -57,63 +60,26 @@ export default {
                     return e.response
                 }
             }
-        // (parent, { name }, { models }) => {
-        //     return models.areas[name]}
     },
     Mutation: {
         createArea:
             async (_, args) => {
                 try {
                     var response = await Area.create(args)
-                    return response
+                    return args
                 } catch (e) {
                     return e.response
                 }
-            }
-        // (parent, {
-        //     name,
-        //     latitude,
-        //     longitude,
-        //     radius,
-        // }, { models }) => {
-        //     const newArea = {
-        //         name,
-        //         latitude,
-        //         longitude,
-        //         radius
-        //     }
-        //     models.areas[name] = newArea;
-        //     return newArea;
-        // }
-        ,
+            },
         updateArea:
             async (_, args) => {
                 try {
-                    var response = await Area.findOneAndUpdate(args)
-                    return response
+                    var response = await Area.findOneAndUpdate({name: args.name}, args)
+                    return args
                 } catch (e) {
                     return e.response
                 }
-            }
-        // (parent, {
-        //     name,
-        //     latitude,
-        //     longitude,
-        //     radius
-        // }, { models }) => {
-        //     const area = models.areas[name]
-        //     if (latitude !== area.latitude) {
-        //         area.latitude = latitude
-        //     }
-        //     if (longitude !== area.longitude) {
-        //         area.longitude = longitude
-        //     }
-        //     if (radius !== area.radius) {
-        //         area.radius = radius
-        //     }
-        //     return area;
-        // }
-        ,
+            },
         deleteArea:
             async (_, name) => {
                 try {
@@ -122,70 +88,23 @@ export default {
                 } catch (e) {
                     return e.response
                 }
-            }
-        // (parent, { name }, { models }) => {
-        //     const { [name]: area, ...otherAreas } = models.areas
-        //     models.areas = otherAreas
-        //     return area
-        // }
-        ,
-        createEvent:
-            async (_, args) => {
-                const name = args.name;
-                try {
-                    var response = await Area.findOneAndUpdate(name, { enter: args.enter, exit: args.exit, title: args.title, body: args.body })
-                    return response;
-                } catch (e) {
-                    return e.response;
-                }
             },
-        // (parent, {
-        //     name,
-        //     enter,
-        //     exit,
-        //     bluetooth,
-        //     notifications
-        // }, { models }) => {
-        //     const area = models.areas[name];
-        //     if (enter) {
-        //         if (area.enter === undefined) { area.enter = {} }
-        //         if (bluetooth !== null) {
-        //             area.enter.bluetooth = bluetooth
-        //         }
-        //         if (area.enter.notifications === undefined) { area.enter.notifications = [] };
-        //         if (notifications !== null) {
-        //             area.enter.notifications.push(notifications)
-        //         }
-        //     }
-        //     if (exit) {
-        //         if (area.exit === undefined) { area.exit = {} }
-        //         if (bluetooth !== null) {
-        //             area.exit.bluetooth = bluetooth
-        //         }
-        //         if (area.exit.notifications === undefined) { area.exit.notifications = [] };
-        //         if (notifications !== null) {
-        //             area.exit.notifications.push(notifications)
-        //         }
-        //     }
-        //     return area
-        // }
         updateEvent:
             async (_, args) => {
                 try {
-                    var response = Area.findOneAndUpdate(args);
-                    return response;
+                    var response = Area.findOneAndUpdate({name: args.name}, args);
+                    return args;
                 }
                 catch (e) {
                     return e.response
                 }
-            }
-        ,
+            },
         deleteEvent:
             async (_, args) => {
                 const name = args.name;
                 try {
-                    var response = await Area.findOneAndUpdate(name, { enter: false, exit: false, title: null, body: null })
-                    return response;
+                    var response = await Area.findOneAndUpdate({ name }, { enter: false, exit: false, title: null, body: null })
+                    return name;
                 }
                 catch (e) {
                     return e.response;
