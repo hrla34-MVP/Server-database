@@ -3,16 +3,15 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import express from 'express';
 import mongoose from 'mongoose';
-mongoose.Promise = global.Promise;
 import { ApolloServer } from 'apollo-server-express';
-import schema  from './gqlschema/index';
+import schema from './gqlschema/index';
 import resolvers from './resolvers/resolvers';
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded( {extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const server = new ApolloServer({
     typeDefs: schema,
@@ -27,9 +26,9 @@ server.applyMiddleware({
 const url = process.env.MONGODB_URI || 'mongodb://localhost/geofencing-notification';
 mongoose.connect(url);
 
-// mongo connection for development:
-// const url = 'mongodb://localhost:27017/graphql';
-// mongoose.connect(url, {newURLParser: true});
+// UNCOMMENT THE FOLLOWING IF RUNNING LOCALLY FOR DEVELOPMENT/TESTING:
+// const mongoURL = 'mongodb://localhost:27017/graphql';
+// mongoose.connect(mongoURL, {newURLParser: true});
 
 app.listen({
     port: process.env.PORT || 8000

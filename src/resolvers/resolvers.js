@@ -44,13 +44,13 @@ export default {
     Query: {
         areas:
             async () => {
-            try {
-                var response = await Area.find({})
-                return response;
-            } catch (e) {
-                return e.response
-            }
-        },
+                try {
+                    var response = await Area.find({})
+                    return response;
+                } catch (e) {
+                    return e.response
+                }
+            },
         area:
             async (_, { name }) => {
                 try {
@@ -74,7 +74,7 @@ export default {
         updateArea:
             async (_, args) => {
                 try {
-                    var response = await Area.findOneAndUpdate({name: args.name}, args)
+                    var response = await Area.findOneAndUpdate({ name: args.name }, args)
                     return args
                 } catch (e) {
                     return e.response
@@ -92,10 +92,9 @@ export default {
         updateEvent:
             async (_, args) => {
                 try {
-                    var response = Area.findOneAndUpdate({name: args.name}, args);
+                    var response = Area.findOneAndUpdate({ name: args.name }, args);
                     return args;
-                }
-                catch (e) {
+                } catch (e) {
                     return e.response
                 }
             },
@@ -105,8 +104,7 @@ export default {
                 try {
                     var response = await Area.findOneAndUpdate({ name }, { enter: false, exit: false, title: null, body: null })
                     return name;
-                }
-                catch (e) {
+                } catch (e) {
                     return e.response;
                 }
             }
