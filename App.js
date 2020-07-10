@@ -6,8 +6,8 @@ import { ApolloProvider } from 'react-apollo';
 
 const client = new ApolloClient({
   link: new HttpLink({
-    uri: 'https://geofencing-notification.herokuapp.com/graphql'
-    // uri: 'http://localhost:8000/graphql' --> uri for development/testing
+//     uri: 'https://geofencing-notification.herokuapp.com/graphql'
+    uri: 'http://localhost:8000/graphql'
   }),
   cache: new InMemoryCache()
 });
